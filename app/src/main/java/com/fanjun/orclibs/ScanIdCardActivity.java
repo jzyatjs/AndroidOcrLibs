@@ -23,8 +23,6 @@ import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import kernal.bankcard.android.BankCardAPI;
-
 /**
  * 识别身份证开源 demo （驾驶证一样）
  * 实际上识别身份证和驾驶证的API是一样的
@@ -32,7 +30,6 @@ import kernal.bankcard.android.BankCardAPI;
 public class ScanIdCardActivity extends AppCompatActivity implements Camera.PreviewCallback, SurfaceHolder.Callback {
     private SurfaceView mSurfaceView;
     private SurfaceHolder surfaceHolder;
-    private BankCardAPI bankCardAPI;
     Camera mCamera;
     ImageView view2;
     Handler ocrHandler;
@@ -40,11 +37,13 @@ public class ScanIdCardActivity extends AppCompatActivity implements Camera.Prev
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_scan);
+        setContentView(R.layout.activity_scan_card);
         mSurfaceView = findViewById(R.id.mSurfaceView);
         view2 = findViewById(R.id.view2);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);//禁止息屏
+        this.surfaceHolder = mSurfaceView.getHolder();
+        this.surfaceHolder.addCallback(this);
         initHandler();
         LibraryInitOCR.initOCR(this);
         LibraryInitOCR.initDecode(this, ocrHandler, true);//第三个参数是是否保存图片
