@@ -1,16 +1,23 @@
-# AndroidOcrLibs 安卓离线识别身份证、驾驶证、银行卡
+# AndroidOcrLibs 安卓离线识别身份证、驾驶证、银行卡、车牌号
 ```Xml
 1.极速识别二代身份证(无需联网，离线秒扫，极速识别)身份证所有信息, 包含 姓名、性别、出生年月、详细地址，正反面。可识别新疆少数民族身份证，可保存识别图片。
 2.极速识别驾驶证（无需联网，离线秒扫，极速识别）国家，初始领证，准驾车型，有效期限，可保存识别图片。
 3.极速识别银行卡（无需联网，离线秒扫，极速识别）卡号，过期日期，发卡银行，卡名，机构代码，卡种，可保存识别图片。
-4.没有任何限制（如不要求验签，不限制次数，任由您使用）
+4.极速识别车牌号（无需联网，离线秒扫，极速识别）可识别蓝牌，黄牌，黑牌，白牌，绿牌，可获取到车牌号及颜色，可保存识别图片。
+5.本demo中已基本涵盖了所有核心API的使用，代码写的很烂，但您一定看得懂
+6.没有任何限制（如：不要求验签，不限制次数，永久免费，任由您使用）
+```
+
+# 1.1版-更新日志
+```Xml
+【2020-1-2 14:00】
+1.新增车牌号识别功能
+2.优化包体积，缩减到10兆。（移除了除arm外的所有so包，如您特别需要可联系本人）
 ```
 
 # 鸣谢 XieZhiFa大神
 ```Xml
-（https://github.com/XieZhiFa/IdCardOCR），识别身份证及驾驶证代码提取自该大神的开源项目
-1.本项目在XieZhiFa大神的项目上扩增了离线识别银行卡功能，包体积没有太大变化
-2.本demo中已基本涵盖了所有核心API的使用，代码写的很烂，但您一定看得懂
+（https://github.com/XieZhiFa/IdCardOCR），识别身份证及驾驶证代码提取自该大神的开源项目，已绿化，无需验签。
 ```
 
 ### aar集成方式
@@ -26,7 +33,7 @@
       }
     }
     dependencies {
-        implementation (name: 'ocr-library', ext: 'aar')
+        implementation (name: 'ocr-library-1.1', ext: 'aar')
     }
 ```
 ### 识别身份证及驾驶证核心api（LibraryInitOCR.class）
@@ -142,7 +149,56 @@
      */
     public native void WTUnInitCardKernal();
 ```
-
+### 识别车牌号核心api(BankCardAPI.class)
+```Java
+   /**
+     * 初始化识别车牌号sdk
+     * @param paramHandler 用于接受识别成功消息
+     */
+    public NativeOcrPn(Handler paramHandler);
+    /**
+     * 实时识别车牌号
+     * @param paramArrayOfByte1 拍摄区车牌数据
+     * @param paramInt1 拍摄区长度
+     * @param paramInt2 拍摄区宽度
+     * @param paramArrayOfInt 识别区坐标，长度4的数组，分别对应识别区域左、上、右、下坐标
+     * @param paramContext 上下文
+     * @return
+     */
+    public int ScanCarNo(byte[] paramArrayOfByte1, int paramInt1, int paramInt2, int[] paramArrayOfInt, Context paramContext);
+    /**
+     * 获取识别结果
+     * @param var1 用于存储返回的识别结果
+     * @param var2 var1数组的长度
+     * @return
+     */
+    public native int GetResult(byte[] var1, int var2);
+    /**
+     * 生成截取的车牌号图片
+     * @param var1 存储图片的路径
+     * @return
+     */
+    public native long CarImage(byte[] var1);
+    
+    //解码结果通过handler 接收
+    switch (msg.what){
+        //解码成功
+        case 201: {
+            byte[] arrayOfByte = new byte[1024];
+            mScanCarApi.GetResult(arrayOfByte, arrayOfByte.length);
+            //保存图片路径
+            String imagePath = newImgPath();
+            mScanCarApi.CarImage(imagePath.getBytes("gbk"));
+            JSONObject localJSONObject1 = new JSONObject(new String(arrayOfByte, "gbk"));
+            //车牌号
+            String mEt_carno = localJSONObject1.getString("Num");
+            //行数
+            String mEt_layer = localJSONObject1.getString("Layer");
+            //颜色
+            String mEt_color = localJSONObject1.getString("Color");
+        }
+    }
+```
 ### 混淆
 ```Xml
 以自动处理混淆，无需处理
