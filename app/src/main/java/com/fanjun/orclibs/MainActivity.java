@@ -15,11 +15,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    Button mScanIdCard, mScanDriverCard, mScanBankCard;
+    Button mScanIdCard, mScanDriverCard, mScanBankCard, mScanCarCard;
     TextView mSuccessText;
     public static final int SCAN_IDCARD_REQUEST = 1;
     public static final int SCAN_DRIVERCARD_REQUEST = 2;
     public static final int SCAN_BANKCARD_REQUEST = 3;
+    public static final int SCAN_CAR_REQUEST = 4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,9 +30,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mScanDriverCard = findViewById(R.id.mScanDriverCard);
         mScanBankCard = findViewById(R.id.mScanBankCard);
         mSuccessText = findViewById(R.id.mSuccessText);
+        mScanCarCard = findViewById(R.id.mScanCarCard);
         mScanIdCard.setOnClickListener(this);
         mScanDriverCard.setOnClickListener(this);
         mScanBankCard.setOnClickListener(this);
+        mScanCarCard.setOnClickListener(this);
         AndPermission.with(this).runtime().permission(Permission.Group.CAMERA, Permission.Group.STORAGE).start();
     }
 
@@ -62,6 +65,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Intent intent = new Intent(MainActivity.this, ScanBankCardActivity.class);
                 startActivityForResult(intent, SCAN_BANKCARD_REQUEST);
                 break;
+            //识别车牌号
+            case R.id.mScanCarCard:
+                Intent intent2 = new Intent(MainActivity.this, ScanCarActivity.class);
+                startActivityForResult(intent2, SCAN_CAR_REQUEST);
         }
     }
 
@@ -107,8 +114,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                     break;
                 case SCAN_BANKCARD_REQUEST:
-                    String result2 = data.getStringExtra("OCRResult");
-                    mSuccessText.setText(result2);
+                    mSuccessText.setText(data.getStringExtra("OCRResult"));
+                    break;
+                case SCAN_CAR_REQUEST:
+                    mSuccessText.setText(data.getStringExtra("OCRResult"));
+                    break;
             }
         }
     }

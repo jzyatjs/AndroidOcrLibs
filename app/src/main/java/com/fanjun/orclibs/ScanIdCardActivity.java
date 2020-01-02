@@ -37,7 +37,7 @@ public class ScanIdCardActivity extends AppCompatActivity implements Camera.Prev
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_scan_card);
+        setContentView(R.layout.activity_scan);
         mSurfaceView = findViewById(R.id.mSurfaceView);
         view2 = findViewById(R.id.view2);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
