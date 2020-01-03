@@ -34,6 +34,11 @@
             dirs 'libs'
         }
       }
+      defaultConfig {
+        ndk {
+            abiFilters "armeabi"
+        }
+    }
     }
     dependencies {
         implementation (name: 'ocr-library-1.1', ext: 'aar')
